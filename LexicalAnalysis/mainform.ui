@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>660</width>
-    <height>562</height>
+    <width>710</width>
+    <height>592</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -18,14 +18,14 @@
     <rect>
      <x>25</x>
      <y>80</y>
-     <width>296</width>
-     <height>301</height>
+     <width>346</width>
+     <height>321</height>
     </rect>
    </property>
    <property name="font">
     <font>
      <family>Consolas</family>
-     <pointsize>10</pointsize>
+     <pointsize>11</pointsize>
     </font>
    </property>
    <property name="styleSheet">
@@ -47,10 +47,15 @@ QTextEdit#textEdit{border:1px solid rgb(216, 216, 216);}</string>
    <property name="geometry">
     <rect>
      <x>25</x>
-     <y>410</y>
-     <width>296</width>
-     <height>121</height>
+     <y>430</y>
+     <width>346</width>
+     <height>141</height>
     </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>10</pointsize>
+    </font>
    </property>
    <property name="styleSheet">
     <string notr="true">QTextBrowser#textBrowser:focus{outline: none;
@@ -64,10 +69,10 @@ QTextBrowser#textBrowser{border:1px solid rgb(216, 216, 216);}</string>
   <widget class="QTableWidget" name="MarkTable">
    <property name="geometry">
     <rect>
-     <x>340</x>
+     <x>390</x>
      <y>80</y>
      <width>301</width>
-     <height>451</height>
+     <height>491</height>
     </rect>
    </property>
    <property name="styleSheet">
@@ -107,7 +112,7 @@ QTextBrowser#textBrowser{border:1px solid rgb(216, 216, 216);}</string>
     <rect>
      <x>10</x>
      <y>10</y>
-     <width>640</width>
+     <width>690</width>
      <height>35</height>
     </rect>
    </property>
@@ -117,7 +122,7 @@ QTextBrowser#textBrowser{border:1px solid rgb(216, 216, 216);}</string>
    <widget class="QPushButton" name="CloseBtn">
     <property name="geometry">
      <rect>
-      <x>605</x>
+      <x>655</x>
       <y>0</y>
       <width>35</width>
       <height>35</height>
@@ -136,8 +141,8 @@ QPushButton#CloseBtn:hover{border:none;background:rgb(72, 177, 160)}</string>
     </property>
     <property name="iconSize">
      <size>
-      <width>20</width>
-      <height>20</height>
+      <width>13</width>
+      <height>17</height>
      </size>
     </property>
     <property name="flat">
@@ -148,49 +153,22 @@ QPushButton#CloseBtn:hover{border:none;background:rgb(72, 177, 160)}</string>
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>10</y>
-      <width>161</width>
-      <height>16</height>
+      <y>7</y>
+      <width>271</width>
+      <height>21</height>
      </rect>
     </property>
     <property name="font">
      <font>
-      <family>方正黑体简体</family>
-      <pointsize>14</pointsize>
+      <family>微软雅黑</family>
+      <pointsize>13</pointsize>
      </font>
     </property>
     <property name="styleSheet">
      <string notr="true">QLabel#TitleLabel{color:white}</string>
     </property>
     <property name="text">
-     <string>C语言词法分析器</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="ReturnButton">
-    <property name="geometry">
-     <rect>
-      <x>230</x>
-      <y>0</y>
-      <width>35</width>
-      <height>35</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">QPushButton#ReturnButton{border:none;background:rgb(68, 166, 150);}
-QPushButton#ReturnButton:hover{border:none;background:rgb(72, 177, 160)}</string>
-    </property>
-    <property name="text">
-     <string/>
-    </property>
-    <property name="icon">
-     <iconset>
-      <normaloff>:/images/return.png</normaloff>:/images/return.png</iconset>
-    </property>
-    <property name="iconSize">
-     <size>
-      <width>20</width>
-      <height>20</height>
-     </size>
+     <string>Language C Lexical Analyer</string>
     </property>
    </widget>
   </widget>
@@ -199,7 +177,7 @@ QPushButton#ReturnButton:hover{border:none;background:rgb(72, 177, 160)}</string
     <rect>
      <x>25</x>
      <y>60</y>
-     <width>54</width>
+     <width>101</width>
      <height>16</height>
     </rect>
    </property>
@@ -212,15 +190,15 @@ QPushButton#ReturnButton:hover{border:none;background:rgb(72, 177, 160)}</string
     </font>
    </property>
    <property name="text">
-    <string>源代码</string>
+    <string>Source Code</string>
    </property>
   </widget>
   <widget class="QLabel" name="MarkLabel">
    <property name="geometry">
     <rect>
-     <x>340</x>
+     <x>390</x>
      <y>60</y>
-     <width>54</width>
+     <width>81</width>
      <height>16</height>
     </rect>
    </property>
@@ -231,16 +209,16 @@ QPushButton#ReturnButton:hover{border:none;background:rgb(72, 177, 160)}</string
     </font>
    </property>
    <property name="text">
-    <string>记号表</string>
+    <string>Word List</string>
    </property>
   </widget>
   <widget class="QLabel" name="InfoLabel">
    <property name="geometry">
     <rect>
      <x>25</x>
-     <y>390</y>
-     <width>61</width>
-     <height>16</height>
+     <y>407</y>
+     <width>151</width>
+     <height>21</height>
     </rect>
    </property>
    <property name="font">
@@ -250,17 +228,22 @@ QPushButton#ReturnButton:hover{border:none;background:rgb(72, 177, 160)}</string
     </font>
    </property>
    <property name="text">
-    <string>状态信息</string>
+    <string>Analysis Infomation</string>
    </property>
   </widget>
   <widget class="QPushButton" name="pushButton">
    <property name="geometry">
     <rect>
-     <x>240</x>
+     <x>290</x>
      <y>57</y>
      <width>81</width>
      <height>21</height>
     </rect>
+   </property>
+   <property name="font">
+    <font>
+     <family>Consolas</family>
+    </font>
    </property>
    <property name="text">
     <string>File Input</string>

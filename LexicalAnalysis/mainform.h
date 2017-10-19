@@ -26,7 +26,7 @@ private:
     QPoint mMousePoint;
     void MarkTableInit();
     void CodeLoad(void);
-    void ErrorLoad(void);
+    void AnalysisInfoLoad(void);
     QString getSstring(std::string &type, int &pos);
     void paintEvent(QPaintEvent *event);//重写窗体阴影
     void mousePressEvent(QMouseEvent * e);//以下三个重写鼠标活动，获得窗体移动

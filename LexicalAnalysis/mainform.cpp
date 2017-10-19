@@ -187,7 +187,7 @@ void MainForm::on_pushButton_clicked()
      Path = QFileDialog::getOpenFileName(this,"Open C Source File",".","*.c");
      Analysis();
      CodeLoad();
-     ErrorLoad();
+     AnalysisInfoLoad();
      MarkTableRefresh(LIST.size());
 }
 void MainForm::CodeLoad(void)
@@ -209,15 +209,15 @@ void MainForm::CodeLoad(void)
         ui->textEdit->append(QString::fromLocal8Bit(t.c_str()));
     }
 }
-void MainForm::ErrorLoad(void)
+void MainForm::AnalysisInfoLoad(void)
 {
     ui->textBrowser->clear();
-    vector<string> t1=ERROR;
-    QString t="";
+    QString t=QString::fromWCharArray(L"LINE：")+QString::number(lineCount)+" "+QString::fromWCharArray(L"CHAR：")
+            +QString::number(charCount)+" "+QString::fromWCharArray(L"WORD：")+QString::number(LIST.size())+"\n";
     for(int i=0;i<ERROR.size();i++)
     {
         t.append(QString::fromStdString(ERROR[i]));
-        //ui->textBrowser->append(QString::fromStdString(ERROR[i]));
     }
+    ui->textBrowser->setFont(QFont(QString::fromWCharArray(L"Calibri"),11));
     ui->textBrowser->setText(t);
 }

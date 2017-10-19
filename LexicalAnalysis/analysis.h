@@ -13,5 +13,7 @@ extern vector<string> STRING;
 extern vector<string> NUM;
 extern vector<string> ERROR;
 extern void Analysis(void);
+extern int lineCount;
+extern int charCount;
 extern QString Path;
 #endif // ANALYSIS_H

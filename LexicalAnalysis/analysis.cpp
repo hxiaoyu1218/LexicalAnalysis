@@ -7,10 +7,11 @@
 #include<algorithm>
 #include<qstring.h>
 #include"func.h"
-#define BUFFER_SIZE 233
+#define BUFFER_SIZE 23
 using namespace std;
 QString Path;
 int lineCount = 1;
+int charCount = 0;
 char Buffer[BUFFER_SIZE * 2];
 char token[128];
 int tokenIndex = 0;
@@ -25,10 +26,10 @@ vector<string> KEY{ "auto", "double", "int", "struct", "break", "else", "long",
 vector<string> ID;
 vector<string> OP{ "+","-","*","/","%","(",")","<",">","=","++","--","+=","-=","*=",
                    "/=","<=",">=","==" ,"!","~","^","&","||","|" };
-vector<string> DELIMITER{ ",",";","#","//","{","}","[","]","\"", "'" };
+vector<string> DELIMITER{ ",",";","//","{","}","[","]","\"", "'" };
 vector<string> STRING;
 vector<string> ERROR;
-void Init(void)
+void Init(void)//open file
 {
     input = fopen(Path.toStdString().c_str(), "r");
 }
@@ -39,6 +40,7 @@ int ScanLbuffer(void)
     {
         if (feof(input))
         {
+            charCount+=i;
             return i;
         }
         fscanf(input, "%c", &Buffer[i]);
@@ -53,6 +55,7 @@ int ScanRbuffer(void)
     {
         if (feof(input))
         {
+            charCount+=i;
             return i;
         }
         fscanf(input, "%c", &Buffer[i]);
@@ -63,7 +66,6 @@ void Analysis(void)
 {
     Init();
     int state = 0;
-    int opState = 0;
     int i = 0;
     int countL = ScanLbuffer();
     int countR = ScanRbuffer();
@@ -74,7 +76,7 @@ void Analysis(void)
     {
         switch (state)
         {
-            case 0:
+            case 0://start
             {
                 if (Buffer[i] == ' ' || Buffer[i] == '\t' || Buffer[i] == '\n')
                 {
@@ -82,25 +84,17 @@ void Analysis(void)
                 }
                 else
                 {
-                    if (isalpha(Buffer[i]))//id
+                    if (isalpha(Buffer[i])||Buffer[i]=='_')//id
                     {
                         state = 1;
                         token[tokenIndex++] = Buffer[i];
                     }
-                    else if (isdigit(Buffer[i]))//op & delimiter
+                    else if (isdigit(Buffer[i]))//unsigned num
                     {
                         state = 2;
                         token[tokenIndex++] = Buffer[i];
                     }
-                    else if (Buffer[i] == '\"')
-                    {
-                        state = 11;
-                    }
-                    else if (Buffer[i] == '\'')
-                    {
-                        state = 12;
-                    }
-                    else
+                    else//op & delimiter
                     {
                         state = 3;
                         token[tokenIndex++] = Buffer[i];
@@ -181,7 +175,6 @@ void Analysis(void)
                     }
                     case ',':
                     case ';':
-                    case '#':
                     case '{':
                     case '}':
                     case '[':
@@ -191,10 +184,30 @@ void Analysis(void)
                         DelimiterTokenPush();
                         break;
                     }
+                    case '"':
+                    {
+                        state = 11;
+                        ResetTokenArray();
+                        break;
+                    }
+                    case '\'':
+                    {
+                        state = 12;
+                        ResetTokenArray();
+                        break;
+                    }
                     default:
                     {
                         //error deal
-
+                        state = 0;
+                        token[tokenIndex] = '\0';
+                        string t = token;
+                        printf("LINE %d ERROR: Token<%s> non-existent!\n",lineCount, t.c_str());
+                        char temp[100];
+                        sprintf(temp,"LINE %d ERROR: Token<%s> non-existent!\n", lineCount, t.c_str());
+                        string er=temp;
+                        ERROR.push_back(er);
+                        ResetTokenArray();
                         break;
                     }
                 }
@@ -358,7 +371,7 @@ void Analysis(void)
                     state = 0;
 
                     token[tokenIndex] = '\0';
-                    string t = token;
+                    string t = token;       //save string
 
                     ResetTokenArray();
                     token[tokenIndex++] = '"';
