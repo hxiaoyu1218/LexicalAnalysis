@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/images">
+        <file>H:/Code/问答系统qt/shutdown.png</file>
+    </qresource>
+</RCC>
