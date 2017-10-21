@@ -1,8 +1,8 @@
 ﻿#include "mainform.h"
 #include "ui_mainform.h"
 #include "analysis.h"
-#include<qpainter.h>
-#include<qmath.h>
+#include <qpainter.h>
+#include <qmath.h>
 #include <qscrollbar.h>
 #include <QString>
 #include <QMouseEvent>
@@ -84,7 +84,6 @@ void MainForm::MarkTableInit()
     ui->MarkTable->horizontalHeader()->resizeSection(0,50);
     ui->MarkTable->horizontalHeader()->resizeSection(1,160);
     ui->MarkTable->horizontalHeader()->resizeSection(2,73);
-
     QTextEdit *tb1 = new QTextEdit();
     tb1->setStyleSheet("border:none;margin:0.5px;");
     tb1->setReadOnly(true);
@@ -94,9 +93,9 @@ void MainForm::MarkTableInit()
     tb1->setFixedWidth(50-2);
     tb1->document()->setPageSize(QSizeF(50-4,1));
     ui->MarkTable->setCellWidget(0,0,tb1);
-   // ui->MarkTable->setItem(0,0,new QTableWidgetItem(QString::fromWCharArray(L"#")));
     ui->MarkTable->setItem(0,1,new QTableWidgetItem(QString::fromWCharArray(L"记号")));
     ui->MarkTable->setItem(0,2,new QTableWidgetItem(QString::fromWCharArray(L"属性")));
+
 
     ui->MarkTable->setFont(QFont("Consolas",10));
 
@@ -105,7 +104,22 @@ void MainForm::MarkTableInit()
 }
 void MainForm::MarkTableRefresh(int count)
 {
+    ui->MarkTable->clear();
+    QTextEdit *tb1 = new QTextEdit();
+    tb1->setStyleSheet("border:none;margin:0.5px;");
+    tb1->setReadOnly(true);
+    tb1->setFont(QFont("Consolas",10));
+    tb1->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);//不显示垂直滚动条
+    tb1->setText("#");
+    tb1->setFixedWidth(50-2);
+    tb1->document()->setPageSize(QSizeF(50-4,1));
+    ui->MarkTable->setCellWidget(0,0,tb1);
+    ui->MarkTable->setItem(0,1,new QTableWidgetItem(QString::fromWCharArray(L"记号")));
+    ui->MarkTable->setItem(0,2,new QTableWidgetItem(QString::fromWCharArray(L"属性")));
     ui->MarkTable->setRowCount(count+1);
+
+    vector<pair<string, int>> a=LIST;
+
     for(int i=1;i<count+1;i++)
     {
 
@@ -145,8 +159,6 @@ void MainForm::MarkTableRefresh(int count)
         tb2->document()->setPageSize(QSizeF(73-4,1));
         ui->MarkTable->setCellWidget(i,2,tb2);
 
-      //  ui->MarkTable->setItem(i,2,new QTableWidgetItem(QString::fromStdString(LIST[i-1].first)));//添加属性
-      //  ui->MarkTable->setCellWidget(i,1,tb);
         ui->MarkTable->setRowHeight(i,h);
     }
 }
@@ -185,7 +197,10 @@ QString MainForm::getSstring(string &type, int &pos)
 void MainForm::on_pushButton_clicked()
 {
      Path = QFileDialog::getOpenFileName(this,"Open C Source File",".","*.c");
+     if(Path=="")return;
+     ResetList();
      Analysis();
+     vector<string> a=STRING;
      CodeLoad();
      AnalysisInfoLoad();
      MarkTableRefresh(LIST.size());
@@ -208,6 +223,7 @@ void MainForm::CodeLoad(void)
         }
         ui->textEdit->append(QString::fromLocal8Bit(t.c_str()));
     }
+    in.close();
 }
 void MainForm::AnalysisInfoLoad(void)
 {

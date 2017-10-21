@@ -12,9 +12,11 @@ extern vector<string> STRING;
 extern vector<string> NUM;
 extern vector<pair<string, int>> LIST;
 extern vector<string> ERROR;
+extern char Buffer[23*2];
 extern char token[128];
 extern int tokenIndex;
 extern int lineCount;
+extern int charCount;
 int KeyFind(std::string str, bool &isFind)
 {
     int pos;
@@ -151,9 +153,33 @@ void NumErrorPush(void)
     token[tokenIndex] = '\0';
     string t = token;
     char e[140];
-    sprintf(e,"LINE %d ERROR: Token<%s> is not a unsigned number!\n",lineCount, t.c_str());
-    printf("LINE %d ERROR: Token<%s> is not a unsigned number!\n",lineCount, t.c_str());
+    sprintf(e,"LINE %d ERROR: Token<%s> unsigned number illegal!\n",lineCount, t.c_str());
+    printf("LINE %d ERROR: Token<%s> unsigned number illegal!\n",lineCount, t.c_str());
     string er=e;
     ERROR.push_back(er);
+    ResetTokenArray();
+}
+void HexErrorPush(void)
+{
+    //hexadecimal
+    token[tokenIndex] = '\0';
+    string t = token;
+    char e[140];
+    sprintf(e,"LINE %d ERROR: Token<%s> Hex number illegal!\n",lineCount, t.c_str());
+    printf("LINE %d ERROR: Token<%s> Hex number illegal!\n",lineCount, t.c_str());
+    string er=e;
+    ERROR.push_back(er);
+    ResetTokenArray();
+}
+void ResetList(void)
+{
+    ID.clear();
+    STRING.clear();
+    NUM.clear();
+    LIST.clear();
+    ERROR.clear();
+    lineCount=1;
+    charCount=0;
+    memset(Buffer,0,sizeof(Buffer));
     ResetTokenArray();
 }

@@ -3,6 +3,7 @@
 #include<cctype>
 #include<vector>
 #include<qstring.h>
+#include<func.h>
 using namespace std;
 extern vector<pair<string, int>> LIST;
 extern vector<string> KEY;

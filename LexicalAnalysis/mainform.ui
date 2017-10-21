@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>710</width>
-    <height>592</height>
+    <width>730</width>
+    <height>602</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -18,8 +18,8 @@
     <rect>
      <x>25</x>
      <y>80</y>
-     <width>346</width>
-     <height>321</height>
+     <width>366</width>
+     <height>331</height>
     </rect>
    </property>
    <property name="font">
@@ -47,13 +47,14 @@ QTextEdit#textEdit{border:1px solid rgb(216, 216, 216);}</string>
    <property name="geometry">
     <rect>
      <x>25</x>
-     <y>430</y>
-     <width>346</width>
+     <y>440</y>
+     <width>366</width>
      <height>141</height>
     </rect>
    </property>
    <property name="font">
     <font>
+     <family>Consolas</family>
      <pointsize>10</pointsize>
     </font>
    </property>
@@ -69,10 +70,10 @@ QTextBrowser#textBrowser{border:1px solid rgb(216, 216, 216);}</string>
   <widget class="QTableWidget" name="MarkTable">
    <property name="geometry">
     <rect>
-     <x>390</x>
+     <x>410</x>
      <y>80</y>
      <width>301</width>
-     <height>491</height>
+     <height>501</height>
     </rect>
    </property>
    <property name="styleSheet">
@@ -112,7 +113,7 @@ QTextBrowser#textBrowser{border:1px solid rgb(216, 216, 216);}</string>
     <rect>
      <x>10</x>
      <y>10</y>
-     <width>690</width>
+     <width>710</width>
      <height>35</height>
     </rect>
    </property>
@@ -122,7 +123,7 @@ QTextBrowser#textBrowser{border:1px solid rgb(216, 216, 216);}</string>
    <widget class="QPushButton" name="CloseBtn">
     <property name="geometry">
      <rect>
-      <x>655</x>
+      <x>675</x>
       <y>0</y>
       <width>35</width>
       <height>35</height>
@@ -196,7 +197,7 @@ QPushButton#CloseBtn:hover{border:none;background:rgb(72, 177, 160)}</string>
   <widget class="QLabel" name="MarkLabel">
    <property name="geometry">
     <rect>
-     <x>390</x>
+     <x>410</x>
      <y>60</y>
      <width>81</width>
      <height>16</height>
@@ -216,7 +217,7 @@ QPushButton#CloseBtn:hover{border:none;background:rgb(72, 177, 160)}</string>
    <property name="geometry">
     <rect>
      <x>25</x>
-     <y>407</y>
+     <y>417</y>
      <width>151</width>
      <height>21</height>
     </rect>
@@ -234,7 +235,7 @@ QPushButton#CloseBtn:hover{border:none;background:rgb(72, 177, 160)}</string>
   <widget class="QPushButton" name="pushButton">
    <property name="geometry">
     <rect>
-     <x>290</x>
+     <x>310</x>
      <y>57</y>
      <width>81</width>
      <height>21</height>

@@ -11,3 +11,5 @@ extern void DelimiterTokenPush(void);
 extern void OPTokenPush(void);
 extern void NUMTokenPush(void);
 extern void NumErrorPush(void);
+extern void HexErrorPush(void);
+extern void ResetList(void);

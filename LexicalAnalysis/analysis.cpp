@@ -25,7 +25,7 @@ vector<string> KEY{ "auto", "double", "int", "struct", "break", "else", "long",
                     "goto", "sizeof", "volatile", "do", "if", "while", "static" };
 vector<string> ID;
 vector<string> OP{ "+","-","*","/","%","(",")","<",">","=","++","--","+=","-=","*=",
-                   "/=","<=",">=","==" ,"!","~","^","&","||","|" };
+                   "/=","<=",">=","==" ,"!","~","^","&","||","|" ,"<<",">>"};
 vector<string> DELIMITER{ ",",";","//","{","}","[","]","\"", "'" };
 vector<string> STRING;
 vector<string> ERROR;
@@ -40,7 +40,7 @@ int ScanLbuffer(void)
     {
         if (feof(input))
         {
-            charCount+=i;
+
             return i;
         }
         fscanf(input, "%c", &Buffer[i]);
@@ -55,7 +55,7 @@ int ScanRbuffer(void)
     {
         if (feof(input))
         {
-            charCount+=i;
+
             return i;
         }
         fscanf(input, "%c", &Buffer[i]);
@@ -91,8 +91,13 @@ void Analysis(void)
                     }
                     else if (isdigit(Buffer[i]))//unsigned num
                     {
-                        state = 2;
                         token[tokenIndex++] = Buffer[i];
+                        if(Buffer[i] == '0')
+                        {
+                            state = 14;
+                        }
+                        else
+                            state = 2;
                     }
                     else//op & delimiter
                     {
@@ -132,6 +137,7 @@ void Analysis(void)
                     token[tokenIndex++] = Buffer[i];
                     state = 7;
                 }
+
                 else//end
                 {
                     state = 0;
@@ -199,15 +205,20 @@ void Analysis(void)
                     default:
                     {
                         //error deal
-                        state = 0;
-                        token[tokenIndex] = '\0';
-                        string t = token;
-                        printf("LINE %d ERROR: Token<%s> non-existent!\n",lineCount, t.c_str());
-                        char temp[100];
-                        sprintf(temp,"LINE %d ERROR: Token<%s> non-existent!\n", lineCount, t.c_str());
-                        string er=temp;
-                        ERROR.push_back(er);
-                        ResetTokenArray();
+                        char a=token[0];
+                        if(token[0]=='\0')break;
+                        else
+                        {
+                            state = 0;
+                            token[tokenIndex] = '\0';
+                            string t = token;
+                            printf("LINE %d ERROR: Token<%s> non-existent!\n",lineCount, t.c_str());
+                            char temp[100];
+                            sprintf(temp,"LINE %d ERROR: Token<%s> non-existent!\n", lineCount, t.c_str());
+                            string er=temp;
+                            ERROR.push_back(er);
+                            ResetTokenArray();
+                        }
                         break;
                     }
                 }
@@ -228,13 +239,20 @@ void Analysis(void)
                     token[tokenIndex++] = Buffer[i];
                     OPTokenPush();
                 }
-                else if (token[0] == '+' || token[0] == '-' || token[0] == '|' || token[0] == '&')//++ -- || &&
+                else if (token[0] == '+' || token[0] == '-' || token[0] == '|' || token[0] == '&'
+                         || token[0] == '<'|| token[0] == '>')// ++ -- || && << >>
                 {
                     if (token[0] == Buffer[i])
                     {
                         state = 0;
                         token[tokenIndex++] = Buffer[i];
                         OPTokenPush();
+                    }
+                    else
+                    {
+                        state = 0;
+                        OPTokenPush();
+                        isMin=true;
                     }
                 }
                 else if (token[0] == '/'&&token[0] == Buffer[i])// comment op "//"
@@ -360,7 +378,7 @@ void Analysis(void)
                     token[tokenIndex] = '\0';
                     string t = token;
                     char e[140];
-                    sprintf(e,"LINE %d ERROR: Token<%s> is not a string!\n", lineCount, t.c_str());
+                    sprintf(e,"LINE %d ERROR: Token<%s> string illegal!\n", lineCount, t.c_str());
                     string er=e;
                     ERROR.push_back(er);
                     ResetTokenArray();
@@ -439,12 +457,57 @@ void Analysis(void)
                     isMin = true;
                     token[tokenIndex] = '\0';
                     string t = token;
-                    printf("LINE %d ERROR: Token<%s> is not a char!\n", lineCount, t.c_str());
+                    printf("LINE %d ERROR: Token<%s> char illegal!\n", lineCount, t.c_str());
                     char temp[100];
-                    sprintf(temp,"LINE %d ERROR: Token<%s> is not a char!\n", lineCount, t.c_str());
+                    sprintf(temp,"LINE %d ERROR: Token<%s> char illegal!\n", lineCount, t.c_str());
                     string er=temp;
                     ERROR.push_back(er);
                     ResetTokenArray();
+                }
+                break;
+            }
+            case 14://hex num
+            {
+                if(Buffer[i] == 'x'||Buffer[i] == 'X')
+                {
+                    token[tokenIndex++] = Buffer[i];
+                    state = 15;
+                }
+                else
+                {
+                    isMin = true;
+                    state = 2;
+                }
+                break;
+            }
+            case 15:
+            {
+                token[tokenIndex++] = Buffer[i];
+                if(isdigit(Buffer[i]) || (Buffer[i] >= 'a' && Buffer[i] <= 'f')
+                        || (Buffer[i] >= 'A' && Buffer[i] <= 'F'))
+                {        
+                    state = 16;
+                }
+                else
+                {
+                    state = 0;
+                   // isMin = true;
+                    HexErrorPush();
+                }
+                break;
+            }
+            case 16:
+            {
+                if(isdigit(Buffer[i]) || (Buffer[i] >= 'a' && Buffer[i] <= 'f')
+                        || (Buffer[i] >= 'A' && Buffer[i] <= 'F'))
+                {
+                    token[tokenIndex++] = Buffer[i];
+                }
+                else
+                {
+                    state = 0;
+                    isMin = true;
+                    NUMTokenPush();
                 }
                 break;
             }
@@ -452,6 +515,7 @@ void Analysis(void)
                 break;
         }
         i++;
+        charCount++;
         if (!isMin)
         {
             if (i == countL)
@@ -469,6 +533,7 @@ void Analysis(void)
         else
         {
             i--;
+            charCount--;
             isMin = false;
         }
 
