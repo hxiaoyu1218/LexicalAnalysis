@@ -6,17 +6,19 @@
 #include<stdio.h>
 #include<algorithm>
 #include<qstring.h>
+#include<fstream>
 #include"func.h"
-#define BUFFER_SIZE 23
+#define BUFFER_SIZE 128
+#define TOKEN_SIZE 256
 using namespace std;
-QString Path;
-int lineCount = 1;
-int charCount = 0;
-char Buffer[BUFFER_SIZE * 2];
-char token[128];
-int tokenIndex = 0;
-FILE* input;
-vector<pair<string, int>> LIST;
+QString Path;//输入文件路径
+int lineCount = 1;//行数
+int charCount = -1;//字符数
+char Buffer[BUFFER_SIZE * 2];//配对缓冲区
+char token[TOKEN_SIZE];//记号缓冲区
+int tokenIndex = 0;//记号缓冲区指针
+FILE* input;//输入文件流指针
+vector<pair<string, int>> LIST;//记号表
 vector<string> NUM;
 vector<string> KEY{ "auto", "double", "int", "struct", "break", "else", "long",
                     "switch","case", "enum", "register", "typedef", "char",
@@ -25,7 +27,7 @@ vector<string> KEY{ "auto", "double", "int", "struct", "break", "else", "long",
                     "goto", "sizeof", "volatile", "do", "if", "while", "static" };
 vector<string> ID;
 vector<string> OP{ "+","-","*","/","%","(",")","<",">","=","++","--","+=","-=","*=",
-                   "/=","<=",">=","==" ,"!","~","^","&","||","|" ,"<<",">>"};
+                   "/=","<=",">=","==" ,"!=","|=","&=","%=","^=","!","~","^","&","||","|" ,"<<",">>"};
 vector<string> DELIMITER{ ",",";","//","{","}","[","]","\"", "'" };
 vector<string> STRING;
 vector<string> ERROR;
@@ -33,36 +35,69 @@ void Init(void)//open file
 {
     input = fopen(Path.toStdString().c_str(), "r");
 }
-int ScanLbuffer(void)
+void Output(void)//write file
+{
+    string t=Path.toStdString();
+    string dir=t.substr(0,1+t.find_last_of('/'));//获取目录
+    string fname=t.substr(1+t.find_last_of('/'),t.length());//获取文件名
+    string outPath=dir+fname.substr(0,fname.find_last_of('.'))+".lex";//合成输出路径
+    fstream of;
+    of.open(outPath,ios::out);
+    //输出各个表
+    of<<LIST.size()<<endl;
+    for(int i=0;i<LIST.size();i++)
+    {
+        of<<LIST[i].first<<endl;
+        of<<LIST[i].second<<endl;
+    }
+    of<<NUM.size()<<endl;
+    for(int i=0;i<NUM.size();i++)
+    {
+        of<<NUM[i]<<endl;
+    }
+    of<<ID.size()<<endl;
+    for(int i=0;i<ID.size();i++)
+    {
+        of<<ID[i]<<endl;
+    }
+    of<<STRING.size()<<endl;
+    for(int i=0;i<STRING.size();i++)
+    {
+        of<<STRING[i]<<endl;
+    }
+    of.close();
+}
+int ScanLbuffer(void)//填充左缓冲区
 {
     memset(Buffer, 0, sizeof(Buffer) / 2);
     for (int i = 0; i < BUFFER_SIZE; i++)
     {
         if (feof(input))
         {
-
+            charCount+=i;
             return i;
         }
         fscanf(input, "%c", &Buffer[i]);
     }
+    charCount+=BUFFER_SIZE;
     return BUFFER_SIZE;
 }
-int ScanRbuffer(void)
+int ScanRbuffer(void)//填充右缓冲区
 {
-    int size;
     memset(Buffer + BUFFER_SIZE, 0, sizeof(Buffer) / 2);
     for (int i = BUFFER_SIZE; i < BUFFER_SIZE * 2; i++)
     {
         if (feof(input))
         {
-
+            charCount+=i-BUFFER_SIZE;
             return i;
         }
         fscanf(input, "%c", &Buffer[i]);
     }
+    charCount+=BUFFER_SIZE;
     return BUFFER_SIZE * 2;
 }
-void Analysis(void)
+void Analysis(void)//词法分析DFA
 {
     Init();
     int state = 0;
@@ -80,6 +115,7 @@ void Analysis(void)
             {
                 if (Buffer[i] == ' ' || Buffer[i] == '\t' || Buffer[i] == '\n')
                 {
+                    charCount--;
                     if (Buffer[i] == '\n')lineCount++;
                 }
                 else
@@ -205,7 +241,6 @@ void Analysis(void)
                     default:
                     {
                         //error deal
-                        char a=token[0];
                         if(token[0]=='\0')break;
                         else
                         {
@@ -231,6 +266,7 @@ void Analysis(void)
                     state = 0;
                     isMin = true;
                     OPTokenPush();
+                    break;
                 }
 
                 if (Buffer[i] == '=')//second operator char += -= *= /= %= == <= >= != ^= &= |=
@@ -330,7 +366,7 @@ void Analysis(void)
                 {
                     state = 0;
                     isMin = true;
-                    token[tokenIndex++] = Buffer[i];
+                    //token[tokenIndex++] = Buffer[i];
                     NumErrorPush();
                 }
                 break;
@@ -515,7 +551,7 @@ void Analysis(void)
                 break;
         }
         i++;
-        charCount++;
+        //charCount++;
         if (!isMin)
         {
             if (i == countL)
@@ -533,7 +569,7 @@ void Analysis(void)
         else
         {
             i--;
-            charCount--;
+            //charCount--;
             isMin = false;
         }
 
@@ -543,6 +579,6 @@ void Analysis(void)
     {
         StringTokenPush();
     }
+    Output();
     fclose(input);
 }
-

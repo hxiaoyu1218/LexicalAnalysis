@@ -96,9 +96,7 @@ void MainForm::MarkTableInit()
     ui->MarkTable->setItem(0,1,new QTableWidgetItem(QString::fromWCharArray(L"记号")));
     ui->MarkTable->setItem(0,2,new QTableWidgetItem(QString::fromWCharArray(L"属性")));
 
-
     ui->MarkTable->setFont(QFont("Consolas",10));
-
     ui->MarkTable->resizeRowsToContents();
     ui->MarkTable->setRowHeight(0,30);
 }
@@ -118,14 +116,9 @@ void MainForm::MarkTableRefresh(int count)
     ui->MarkTable->setItem(0,2,new QTableWidgetItem(QString::fromWCharArray(L"属性")));
     ui->MarkTable->setRowCount(count+1);
 
-    vector<pair<string, int>> a=LIST;
-
+    //填充表格
     for(int i=1;i<count+1;i++)
     {
-
-       // QTableWidgetItem *it1= new QTableWidgetItem(QString::number(i));
-
-        //ui->MarkTable->setItem(i,0,it1);//添加序号
 
         QTextEdit *tb = new QTextEdit();
 
@@ -188,9 +181,7 @@ QString MainForm::getSstring(string &type, int &pos)
     }
     else if(type=="string")
     {
-        int a=pos;
         return QString::fromLocal8Bit(STRING[pos].c_str());
-
     }
     else return "error";
 }
@@ -200,7 +191,6 @@ void MainForm::on_pushButton_clicked()
      if(Path=="")return;
      ResetList();
      Analysis();
-     vector<string> a=STRING;
      CodeLoad();
      AnalysisInfoLoad();
      MarkTableRefresh(LIST.size());
@@ -228,8 +218,10 @@ void MainForm::CodeLoad(void)
 void MainForm::AnalysisInfoLoad(void)
 {
     ui->textBrowser->clear();
-    QString t=QString::fromWCharArray(L"LINE：")+QString::number(lineCount)+" "+QString::fromWCharArray(L"CHAR：")
-            +QString::number(charCount)+" "+QString::fromWCharArray(L"WORD：")+QString::number(LIST.size())+"\n";
+    //拼接统计信息（行数，字符数）
+    QString t=QString::fromWCharArray(L"LINE：")+QString::number(lineCount)+"    "+QString::fromWCharArray(L"CHAR：")
+            +QString::number(charCount)+"    "+QString::fromWCharArray(L"WORD：")+QString::number(LIST.size())+"\n";
+    //错误信息append
     for(int i=0;i<ERROR.size();i++)
     {
         t.append(QString::fromStdString(ERROR[i]));

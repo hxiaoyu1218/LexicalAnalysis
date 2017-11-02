@@ -3,6 +3,8 @@
 #include<cctype>
 #include<vector>
 #include<algorithm>
+#define BUFFER_SIZE 128
+#define TOKEN_SIZE 256
 using namespace std;
 extern vector<string> KEY;
 extern vector<string> ID;
@@ -12,11 +14,12 @@ extern vector<string> STRING;
 extern vector<string> NUM;
 extern vector<pair<string, int>> LIST;
 extern vector<string> ERROR;
-extern char Buffer[23*2];
-extern char token[128];
+extern char Buffer[BUFFER_SIZE*2];
+extern char token[TOKEN_SIZE];
 extern int tokenIndex;
 extern int lineCount;
 extern int charCount;
+//表查询 返回索引
 int KeyFind(std::string str, bool &isFind)
 {
     int pos;
@@ -77,12 +80,13 @@ int OPFind(std::string str, bool &isFind)
     }
     return pos;
 }
-void ResetTokenArray(void)
+
+void ResetTokenArray(void)//重置记号缓冲区
 {
     memset(token, 0, sizeof(token));
     tokenIndex = 0;
 }
-void TokenPush(void)
+void TokenPush(void)//关键字接收
 {
     bool find;
     token[tokenIndex] = '\0';
@@ -110,7 +114,7 @@ void TokenPush(void)
         ResetTokenArray();
     }
 }
-void StringTokenPush(void)
+void StringTokenPush(void)//字符（串）接收
 {
     token[tokenIndex] = '\0';
     string t = token;
@@ -119,7 +123,7 @@ void StringTokenPush(void)
     printf("<%s, string>\n", t.c_str());
     ResetTokenArray();
 }
-void DelimiterTokenPush(void)
+void DelimiterTokenPush(void)//界符接收
 {
     bool find;
     token[tokenIndex] = '\0';
@@ -129,7 +133,7 @@ void DelimiterTokenPush(void)
     printf("<%s, delimiter>\n", t.c_str());
     ResetTokenArray();
 }
-void OPTokenPush(void)
+void OPTokenPush(void)//操作符接收
 {
     bool find;
     token[tokenIndex] = '\0';
@@ -139,7 +143,7 @@ void OPTokenPush(void)
     printf("<%s, op>\n", t.c_str());
     ResetTokenArray();
 }
-void NUMTokenPush(void)
+void NUMTokenPush(void)//无符号数接收
 {
     token[tokenIndex] = '\0';
     string t = token;
@@ -148,7 +152,7 @@ void NUMTokenPush(void)
     printf("<%s, num>\n", t.c_str());
     ResetTokenArray();
 }
-void NumErrorPush(void)
+void NumErrorPush(void)//无符号数错误
 {
     token[tokenIndex] = '\0';
     string t = token;
@@ -159,7 +163,7 @@ void NumErrorPush(void)
     ERROR.push_back(er);
     ResetTokenArray();
 }
-void HexErrorPush(void)
+void HexErrorPush(void)//十六进制数错误
 {
     //hexadecimal
     token[tokenIndex] = '\0';
@@ -171,7 +175,7 @@ void HexErrorPush(void)
     ERROR.push_back(er);
     ResetTokenArray();
 }
-void ResetList(void)
+void ResetList(void)//重置分析器
 {
     ID.clear();
     STRING.clear();
@@ -179,7 +183,7 @@ void ResetList(void)
     LIST.clear();
     ERROR.clear();
     lineCount=1;
-    charCount=0;
+    charCount=-1;
     memset(Buffer,0,sizeof(Buffer));
     ResetTokenArray();
 }
