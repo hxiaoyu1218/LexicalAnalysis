@@ -27,7 +27,8 @@ SOURCES += \
         main.cpp \
         mainform.cpp \
     analysis.cpp \
-    func.cpp
+    func.cpp \
+    utf8touni.cpp
 
 HEADERS += \
         mainform.h \

@@ -1,17 +1,18 @@
 ﻿#define _CRT_SECURE_NO_WARNINGS
-#include<iostream>
-#include<string>
-#include<cctype>
-#include<vector>
-#include<stdio.h>
-#include<algorithm>
-#include<qstring.h>
-#include<fstream>
-#include"func.h"
+#include <iostream>
+#include <string>
+#include <cctype>
+#include <vector>
+#include <stdio.h>
+#include <cstring>
+#include <algorithm>
+#include <qstring.h>
+#include <fstream>
+#include "func.h"
 #define BUFFER_SIZE 128
 #define TOKEN_SIZE 256
 using namespace std;
-QString Path;//输入文件路径
+string Path;//输入文件路径
 int lineCount = 1;//行数
 int charCount = -1;//字符数
 char Buffer[BUFFER_SIZE * 2];//配对缓冲区
@@ -31,41 +32,49 @@ vector<string> OP{ "+","-","*","/","%","(",")","<",">","=","++","--","+=","-=","
 vector<string> DELIMITER{ ",",";","//","{","}","[","]","\"", "'" };
 vector<string> STRING;
 vector<string> ERROR;
+
+extern bool UTF8ToUnicode(const char* UTF8, wchar_t* strUnicode);
+
 void Init(void)//open file
 {
-    input = fopen(Path.toStdString().c_str(), "r");
+    wchar_t strUnicode[260];
+    UTF8ToUnicode(Path.c_str(), strUnicode);
+    input = _wfopen(strUnicode, L"r");
+    FILE *E=input;
 }
 void Output(void)//write file
 {
-    string t=Path.toStdString();
+    string t=Path;
     string dir=t.substr(0,1+t.find_last_of('/'));//获取目录
     string fname=t.substr(1+t.find_last_of('/'),t.length());//获取文件名
     string outPath=dir+fname.substr(0,fname.find_last_of('.'))+".lex";//合成输出路径
-    fstream of;
-    of.open(outPath,ios::out);
-    //输出各个表
-    of<<LIST.size()<<endl;
+
+    FILE *tempOut;
+    wchar_t strUnicode[260];
+    UTF8ToUnicode(outPath.c_str(), strUnicode);
+    tempOut = _wfopen(strUnicode, L"w");
+
+    fprintf(tempOut,"%d\n",LIST.size());
     for(int i=0;i<LIST.size();i++)
     {
-        of<<LIST[i].first<<endl;
-        of<<LIST[i].second<<endl;
+        fprintf(tempOut,"%s\n%d\n",LIST[i].first.c_str(),LIST[i].second);
     }
-    of<<NUM.size()<<endl;
+    fprintf(tempOut,"%d\n",NUM.size());
     for(int i=0;i<NUM.size();i++)
     {
-        of<<NUM[i]<<endl;
+        fprintf(tempOut,"%s\n",NUM[i].c_str());
     }
-    of<<ID.size()<<endl;
+    fprintf(tempOut,"%d\n",ID.size());
     for(int i=0;i<ID.size();i++)
     {
-        of<<ID[i]<<endl;
+        fprintf(tempOut,"%s\n",ID[i].c_str());
     }
-    of<<STRING.size()<<endl;
+    fprintf(tempOut,"%d\n",STRING.size());
     for(int i=0;i<STRING.size();i++)
     {
-        of<<STRING[i]<<endl;
+       fprintf(tempOut,"%s\n",STRING[i].c_str());
     }
-    of.close();
+    fclose(tempOut);
 }
 int ScanLbuffer(void)//填充左缓冲区
 {

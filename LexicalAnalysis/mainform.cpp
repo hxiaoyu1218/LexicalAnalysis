@@ -12,6 +12,7 @@
 #include <iostream>
 #include <fstream>
 #include <vector>
+extern bool UTF8ToUnicode(const char* UTF8, wchar_t* strUnicode);
 MainForm::MainForm(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::MainForm)
@@ -160,7 +161,6 @@ QString MainForm::getSstring(string &type, int &pos)
 
     if(type=="num")
     {
-
         return QString::fromStdString(NUM[pos]);
     }
     else if(type=="key")
@@ -181,13 +181,16 @@ QString MainForm::getSstring(string &type, int &pos)
     }
     else if(type=="string")
     {
-        return QString::fromLocal8Bit(STRING[pos].c_str());
+        return QString::fromStdString(STRING[pos].c_str());
     }
     else return "error";
 }
 void MainForm::on_pushButton_clicked()
 {
-     Path = QFileDialog::getOpenFileName(this,"Open C Source File",".","*.c");
+     QString path = QFileDialog::getOpenFileName(this,"Open C Source File",".","*.c");
+     Path = path.toStdString();
+     string a = Path;
+    // Path = QString::fromLocal8Bit(QFileDialog::getOpenFileName(this,"Open C Source File",".","*.c"));
      if(Path=="")return;
      ResetList();
      Analysis();
@@ -198,22 +201,29 @@ void MainForm::on_pushButton_clicked()
 void MainForm::CodeLoad(void)
 {
     ui->textEdit->clear();
-    fstream in;
-    in.open(Path.toStdString(),ios::in);
-    string t;
-    while(getline(in,t))
+
+    FILE *input;
+    wchar_t strUnicode[260];
+    UTF8ToUnicode(Path.c_str(), strUnicode);
+    input = _wfopen(strUnicode, L"r");
+    string tmp="";
+    char ch;
+
+    while(!feof(input))
     {
-        for(int i=0;i<t.length();i++)
+        fscanf(input,"%c",&ch);
+        if(ch=='\t')
         {
-            if(t[i]=='\t')//制表符替换三个空格更加美观
-            {
-                t[i]=' ';
-                t.insert(i,"  ");
-            }
+            tmp+="   ";
         }
-        ui->textEdit->append(QString::fromLocal8Bit(t.c_str()));
+        else
+        {
+            tmp+=ch;
+        }
     }
-    in.close();
+    ui->textEdit->setText(QString::fromStdString(tmp.c_str()));
+
+    fclose(input);
 }
 void MainForm::AnalysisInfoLoad(void)
 {
